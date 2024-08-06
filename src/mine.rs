@@ -79,7 +79,7 @@ impl Miner {
     ) -> Solution {
         // Dispatch job to each thread
         let progress_bar = Arc::new(spinner::new_progress_bar());
-        progress_bar.set_message("Mining...");
+        progress_bar.set_message("Mining...Mining");
         let handles: Vec<_> = (0..threads)
             .map(|i| {
                 std::thread::spawn({
@@ -116,7 +116,7 @@ impl Miner {
                                     }
                                 } else if i == 0 {
                                     progress_bar.set_message(format!(
-                                        "Mining... ({} sec remaining)",
+                                        "Mining...Mining ({} sec remaining)",
                                         cutoff_time.saturating_sub(timer.elapsed().as_secs()),
                                     ));
                                 }
@@ -185,6 +185,7 @@ impl Miner {
             .last_hash_at
             .saturating_add(60)
             .saturating_sub(buffer_time as i64)
+            .saturating_add(120) // 增加固定的120秒
             .saturating_sub(clock.unix_timestamp)
             .max(0) as u64
     }
